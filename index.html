@@ -216,6 +216,7 @@ function rows(){
  var K2=Object.keys(C).map(function(k){var p=k.split('|');return{Jenis:p[0]==='in'?'Pemasukan':'Pengeluaran',Kategori:p.slice(1).join('|'),'Total (Rp)':C[k]}});
  return{T:T,M:M,C:K2};
 }
+function stamp(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
 function dl(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
 function xlsx(){
  var r=rows();
@@ -224,12 +225,12 @@ function xlsx(){
  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(r.T),'Transaksi');
  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(r.M),'Ringkasan Bulanan');
  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(r.C),'Per Kategori');
- XLSX.writeFile(wb,'Laporan-Keuangan-'+TH+'.xlsx');
+ XLSX.writeFile(wb,'Laporan-Keuangan-'+stamp()+'.xlsx');
 }
 function csv(){
  var T=rows().T,h=Object.keys({Tanggal:1,Jenis:1,Kategori:1,Catatan:1,'Jumlah (Rp)':1});
  var s=[h.join(',')].concat(T.map(function(r){return h.map(function(k){return '"'+String(r[k]).replace(/"/g,'""')+'"'}).join(',')})).join('\n');
- dl(new Blob(['\ufeff'+s],{type:'text/csv;charset=utf-8'}),'Transaksi-'+TH+'.csv');
+ dl(new Blob(['\ufeff'+s],{type:'text/csv;charset=utf-8'}),'Transaksi-'+stamp()+'.csv');
 }
 
 function init(){
@@ -240,7 +241,7 @@ function init(){
  $('k_save').onclick=saveTx;
  $('k_cancel').onclick=function(){resetForm();$('k_msg').textContent=''};
  $('k_xl').onclick=xlsx;$('k_csv').onclick=csv;
- $('k_bk').onclick=function(){dl(new Blob([JSON.stringify(S)],{type:'application/json'}),'cadangan-keuangan-'+TH+'.json')};
+ $('k_bk').onclick=function(){dl(new Blob([JSON.stringify(S)],{type:'application/json'}),'cadangan-keuangan-'+stamp()+'.json')};
  $('k_rs').onclick=function(){$('k_file').click()};
  $('k_file').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result);if(!d.tx||!d.cat)throw 1;if(confirm('Ganti data sekarang dengan isi cadangan?')){S=d;save();cats();alert('Data dipulihkan.')}}catch(x){alert('File cadangan tidak valid.')}};r.readAsText(f);e.target.value=''};
  $('k_rst').onclick=function(){if(confirm('Hapus SEMUA transaksi dan kategori? Data di Google Sheets juga akan terhapus di semua perangkat.')){try{localStorage.removeItem(K)}catch(e){}S={tx:[],cat:{in:['Gaji','Lainnya'],out:['Makanan & Minuman','Transportasi','Lainnya']}};save();cats()}};

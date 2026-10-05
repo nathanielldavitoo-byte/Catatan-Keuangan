@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#14213d">
+<title>Laporan Keuangan Pribadi</title>
+</head>
+<body>
+<div id="keu">
+<style>
+body{margin:0}
+#keu{font-family:"Trebuchet MS",Verdana,sans-serif;max-width:980px;margin:0 auto;padding:14px;background:#fff;color:#14213d;line-height:1.45;--in:#1b998b;--out:#e4572e;--ink:#14213d;--bd:#d9dee8;--bg:#f4f6fa}
+#keu *{box-sizing:border-box}
+#keu h2{margin:0 0 4px;font-size:26px}
+#keu h3{margin:0 0 10px;font-size:17px}
+#keu .mut{color:#5b667a;font-size:13px}
+#keu .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
+#keu button,#keu .btn{padding:10px 14px;border:1px solid var(--bd);background:#fff;color:var(--ink);border-radius:8px;cursor:pointer;font-size:15px;font-family:inherit}
+#keu .tabs button.on,#keu button.p{background:var(--ink);color:#fff;border-color:var(--ink)}
+#keu button.d{color:var(--out);padding:6px 9px;font-size:13px}
+#keu button.e{padding:6px 9px;font-size:13px}
+#keu .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+#keu .card{background:var(--bg);border-left:5px solid var(--ink);border-radius:8px;padding:12px 14px}
+#keu .card.i{border-color:var(--in)}#keu .card.o{border-color:var(--out)}
+#keu .card b{display:block;font-size:21px;margin-top:2px;word-break:break-word}
+#keu .box{border:1px solid var(--bd);border-radius:8px;padding:14px;margin-top:12px}
+#keu .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
+#keu .chart{display:flex;gap:3px;align-items:flex-end;height:150px}
+#keu .col{flex:1;text-align:center;font-size:11px;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+#keu .pair{display:flex;gap:2px;align-items:flex-end;height:128px;justify-content:center}
+#keu .pair i{display:block;width:42%;min-height:1px;border-radius:3px 3px 0 0}
+#keu .row{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px;margin:9px 0;font-size:14px}
+#keu .row .bar{grid-column:1/3;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+#keu .row .bar i{display:block;height:100%}
+#keu .row span:last-child{text-align:right}
+#keu .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+#keu label{display:block;font-size:13px;color:#5b667a;margin-bottom:3px}
+#keu input,#keu select{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;font-size:16px;font-family:inherit;background:#fff;color:var(--ink)}
+#keu .tw{overflow-x:auto}
+#keu table{border-collapse:collapse;width:100%;font-size:14px}
+#keu th,#keu td{padding:8px 6px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}
+#keu td.n,#keu th.n{text-align:right}
+#keu .pos{color:var(--in)}#keu .neg{color:var(--out)}
+#keu .pg{display:none}#keu .pg.on{display:block}
+#keu .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+#keu .chip{display:inline-flex;gap:6px;align-items:center;background:var(--bg);border-radius:20px;padding:4px 6px 4px 12px;margin:3px;font-size:14px}
+#keu .chip button{padding:2px 8px;font-size:13px;border-radius:14px}
+</style>
+
+<div class="box" id="k_login" style="max-width:420px;margin:30px auto"><h3>Masuk</h3><label>Kata sandi</label><input type="password" id="k_pw" autocomplete="current-password"><div class="acts"><button class="p" id="k_go">Masuk</button></div><div class="mut" id="k_lm" style="margin-top:8px"></div></div>
+<div id="k_app" style="display:none">
+<h2>Laporan Keuangan Pribadi</h2>
+<div class="mut">Catat pemasukan dan pengeluaran, lihat dashboard, lalu unduh sebagai spreadsheet. <span id="k_st"></span></div>
+
+<div class="tabs" id="k_tabs">
+<button data-t="dash" class="on">Dashboard</button>
+<button data-t="input">Catat</button>
+<button data-t="list">Transaksi</button>
+<button data-t="cat">Kategori &amp; Data</button>
+</div>
+
+<div class="pg on" id="k_p_dash">
+<div class="grid" style="max-width:520px"><div><label>Tahun</label><select id="k_thn"><option value="all">Semua tahun</option><option>2020</option><option>2021</option><option>2022</option><option>2023</option><option>2024</option><option>2025</option><option>2026</option><option>2027</option><option>2028</option><option>2029</option><option>2030</option><option>2031</option><option>2032</option><option>2033</option><option>2034</option><option>2035</option><option>2036</option><option>2037</option><option>2038</option><option>2039</option><option>2040</option><option>2041</option><option>2042</option><option>2043</option><option>2044</option><option>2045</option><option>2046</option><option>2047</option><option>2048</option><option>2049</option><option>2050</option><option>2051</option><option>2052</option><option>2053</option><option>2054</option><option>2055</option><option>2056</option><option>2057</option><option>2058</option><option>2059</option><option>2060</option><option>2061</option><option>2062</option><option>2063</option><option>2064</option><option>2065</option><option>2066</option><option>2067</option><option>2068</option><option>2069</option><option>2070</option><option>2071</option><option>2072</option><option>2073</option><option>2074</option><option>2075</option><option>2076</option></select></div><div><label>Bulan</label><select id="k_bln"><option value="all">Semua bulan</option><option value="0">Januari</option><option value="1">Februari</option><option value="2">Maret</option><option value="3">April</option><option value="4">Mei</option><option value="5">Juni</option><option value="6">Juli</option><option value="7">Agustus</option><option value="8">September</option><option value="9">Oktober</option><option value="10">November</option><option value="11">Desember</option></select></div></div>
+<div class="cards" id="k_cards" style="margin-top:10px"></div>
+<div class="box"><h3 id="k_ct">Pemasukan vs pengeluaran</h3>
+<div class="chart" id="k_chart"></div>
+<div class="mut" style="margin-top:6px"><span class="pos">&#9632;</span> Pemasukan &nbsp; <span class="neg">&#9632;</span> Pengeluaran</div></div>
+<div class="two">
+<div class="box"><h3>Sumber pemasukan</h3><div id="k_bi"></div></div>
+<div class="box"><h3>Alokasi pengeluaran</h3><div id="k_bo"></div></div>
+</div>
+<div class="box"><h3 id="k_tt">Ringkasan</h3><div class="tw"><table id="k_mt"></table></div></div>
+</div>
+
+<div class="pg" id="k_p_input">
+<div class="box"><h3 id="k_ft">Catat transaksi baru</h3>
+<div class="grid">
+<div><label>Tanggal</label><input type="date" id="k_d"></div>
+<div><label>Jenis</label><select id="k_t"><option value="in">Pemasukan</option><option value="out">Pengeluaran</option></select></div>
+<div><label>Kategori</label><select id="k_c"></select></div>
+<div><label>Jumlah (Rp)</label><input type="number" id="k_a" inputmode="numeric" min="0" placeholder="50000"></div>
+<div style="grid-column:1/-1"><label>Catatan (opsional)</label><input id="k_n" placeholder="mis. makan siang"></div>
+</div>
+<div class="acts"><button class="p" id="k_save">Simpan</button><button id="k_cancel" style="display:none">Batal ubah</button></div>
+<div class="mut" id="k_msg" style="margin-top:8px"></div></div>
+</div>
+
+<div class="pg" id="k_p_list">
+<div class="grid"><div><label>Cari catatan/kategori</label><input id="k_q" placeholder="ketik untuk mencari"></div>
+<div><label>Jenis</label><select id="k_f"><option value="">Semua</option><option value="in">Pemasukan</option><option value="out">Pengeluaran</option></select></div></div>
+<div class="box tw"><table id="k_lt"></table></div>
+</div>
+
+<div class="pg" id="k_p_cat">
+<div class="two">
+<div class="box"><h3>Kategori pemasukan</h3><div id="k_ci"></div>
+<div class="acts"><input id="k_ni" placeholder="Kategori baru" style="flex:1"><button class="p" data-add="in">Tambah</button></div></div>
+<div class="box"><h3>Kategori pengeluaran</h3><div id="k_co"></div>
+<div class="acts"><input id="k_no" placeholder="Kategori baru" style="flex:1"><button class="p" data-add="out">Tambah</button></div></div>
+</div>
+<div class="box"><h3>Unduh &amp; cadangan</h3>
+<div class="acts"><button class="p" id="k_xl">Unduh spreadsheet (.xlsx)</button><button id="k_csv">Unduh CSV</button><button id="k_bk">Cadangkan data (.json)</button><button id="k_rs">Pulihkan data</button><button class="d" id="k_rst">Hapus semua data</button></div>
+<input type="file" id="k_file" accept=".json" style="display:none">
+<p class="mut">Data tersimpan di Google Sheets milik Anda dan tampil sama di semua perangkat. Cadangan .json berguna untuk memindahkan data lama atau menyimpan salinan.</p><div class="acts"><button id="k_out">Keluar dari perangkat ini</button></div></div>
+</div>
+
+</div>
+<script src="config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+var YR=new Date().getFullYear(),K='keu_data';
+var BL=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+var S={tx:[],cat:{in:['Gaji','Bonus','Usaha / Freelance','Investasi','Lainnya'],out:['Makanan dan Minuman','Transportasi','Tagihan dan Utilitas','Tempat Tinggal','Kesehatan','Pendidikan','Hiburan','Belanja','Cicilan / Utang','Tabungan dan Investasi','Donasi / Sosial','Lainnya']}};
+var eid=null;
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function rp(n){return 'Rp '+Math.round(n).toLocaleString('id-ID')}
+var API_URL=(window.KEU_API_URL||''),REV=0,PW='',busy=false,again=false,wired=false;
+function rpc(fn,args){
+ return fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args})})
+ .then(function(r){return r.json()}).then(function(j){if(j.error)throw new Error(j.error);return j.data});
+}
+function reload(){
+ return rpc('getData',[PW]).then(function(d){
+  S.tx=d.tx||[];if(d.cat&&d.cat['in'].length&&d.cat.out.length)S.cat=d.cat;REV=d.rev||0;
+  var on=document.querySelector('#k_tabs button.on');show(on?on.getAttribute('data-t'):'dash');
+  $('k_st').textContent='Tersambung ke Google Sheets';
+ });
+}
+function save(){
+ var st=$('k_st');if(busy){again=true;return}
+ busy=true;st.textContent='Menyimpan...';
+ rpc('saveData',[JSON.stringify(S),PW,REV]).then(function(r){
+  busy=false;REV=r.rev;if(again){again=false;save()}else st.textContent='Tersimpan di Google Sheets';
+ }).catch(function(e){
+  busy=false;
+  if(/KONFLIK/.test(e.message)){st.textContent='Data berubah di perangkat lain';alert('Data di Google Sheets sudah diubah dari perangkat lain. Data dimuat ulang; ulangi perubahan terakhir Anda.');reload().catch(function(){})}
+  else{st.textContent='Gagal menyimpan';alert('Gagal menyimpan: '+e.message)}
+ });
+}
+function mon(x){return parseInt(x.d.slice(5,7),10)-1}
+function sorted(){return S.tx.slice().sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:b.id-a.id})}
+
+function show(t){
+ [].forEach.call(document.querySelectorAll('#k_tabs button'),function(b){b.className=b.getAttribute('data-t')===t?'on':''});
+ [].forEach.call(document.querySelectorAll('#keu .pg'),function(p){p.className='pg'});
+ $('k_p_'+t).className='pg on';
+ if(t==='dash')dash();if(t==='list')list();if(t==='cat')cats();if(t==='input')fillCat();
+}
+function yrs(){var a={};S.tx.forEach(function(x){a[x.d.slice(0,4)]=1});a[YR]=1;return Object.keys(a).sort()}
+function fillCat(){var t=$('k_t').value,cur=$('k_c').value;$('k_c').innerHTML=S.cat[t].map(function(c){return '<option>'+esc(c)+'</option>'}).join('');if(cur&&S.cat[t].indexOf(cur)>-1)$('k_c').value=cur}
+
+function dash(){
+ var y=$('k_thn').value,m=$('k_bln').value,all=y==='all';
+ var L=S.tx.filter(function(x){return(all||x.d.slice(0,4)===y)&&(m==='all'||mon(x)===+m)});
+ var i=0,o=0;L.forEach(function(x){if(x.t==='in')i+=x.a;else o+=x.a});
+ var rate=i>0?Math.round((i-o)/i*100):0;
+ $('k_cards').innerHTML='<div class="card i"><span class="mut">Total pemasukan</span><b>'+rp(i)+'</b></div><div class="card o"><span class="mut">Total pengeluaran</span><b>'+rp(o)+'</b></div><div class="card"><span class="mut">Saldo (selisih)</span><b class="'+(i-o>=0?'pos':'neg')+'">'+rp(i-o)+'</b></div><div class="card"><span class="mut">Rasio ditabung</span><b>'+rate+'%</b></div>';
+ var keys=all?yrs():BL.map(function(b,j){return j}),lab=all?keys:BL,mi=[],mo=[];
+ keys.forEach(function(){mi.push(0);mo.push(0)});
+ S.tx.forEach(function(x){var yy=x.d.slice(0,4),ix=all?keys.indexOf(yy):(yy===y?mon(x):-1);if(ix<0)return;if(x.t==='in')mi[ix]+=x.a;else mo[ix]+=x.a});
+ var mx=Math.max.apply(null,mi.concat(mo).concat([1])),ch='',tb='<tr><th>'+(all?'Tahun':'Bulan')+'</th><th class="n">Pemasukan</th><th class="n">Pengeluaran</th><th class="n">Selisih</th></tr>',ti=0,to=0;
+ keys.forEach(function(_,k){
+  ch+='<div class="col"><div class="pair"><i style="background:var(--in);height:'+(mi[k]/mx*100)+'%"></i><i style="background:var(--out);height:'+(mo[k]/mx*100)+'%"></i></div>'+(all?lab[k]:lab[k].slice(0,3))+'</div>';
+  var s=mi[k]-mo[k];ti+=mi[k];to+=mo[k];
+  tb+='<tr><td>'+lab[k]+'</td><td class="n">'+rp(mi[k])+'</td><td class="n">'+rp(mo[k])+'</td><td class="n '+(s>=0?'pos':'neg')+'">'+rp(s)+'</td></tr>';
+ });
+ tb+='<tr><th>Total'+(all?'':' '+y)+'</th><th class="n">'+rp(ti)+'</th><th class="n">'+rp(to)+'</th><th class="n">'+rp(ti-to)+'</th></tr>';
+ $('k_ct').textContent=all?'Pemasukan vs pengeluaran per tahun':'Pemasukan vs pengeluaran per bulan, '+y;
+ $('k_tt').textContent=all?'Ringkasan per tahun':'Ringkasan bulanan '+y;
+ $('k_chart').innerHTML=ch;$('k_mt').innerHTML=tb;
+ $('k_bi').innerHTML=brk(L,'in','var(--in)');$('k_bo').innerHTML=brk(L,'out','var(--out)');
+}
+function brk(L,t,col){
+ var M={},tot=0;L.forEach(function(x){if(x.t===t){M[x.c]=(M[x.c]||0)+x.a;tot+=x.a}});
+ var a=Object.keys(M).sort(function(p,q){return M[q]-M[p]});
+ if(!a.length)return '<p class="mut">Belum ada data. Buka tab Catat untuk mulai.</p>';
+ return a.map(function(c){var p=M[c]/tot*100;return '<div class="row"><span>'+esc(c)+'</span><span>'+rp(M[c])+' ('+p.toFixed(0)+'%)</span><div class="bar"><i style="width:'+p+'%;background:'+col+'"></i></div></div>'}).join('');
+}
+
+function list(){
+ var q=$('k_q').value.toLowerCase(),f=$('k_f').value;
+ var L=sorted().filter(function(x){return(!f||x.t===f)&&((x.c+' '+x.n).toLowerCase().indexOf(q)>-1)});
+ var h='<tr><th>Tanggal</th><th>Kategori</th><th>Catatan</th><th class="n">Jumlah</th><th></th></tr>';
+ if(!L.length)h+='<tr><td colspan="5" class="mut">Belum ada transaksi.</td></tr>';
+ L.forEach(function(x){h+='<tr><td>'+x.d+'</td><td>'+esc(x.c)+'</td><td>'+esc(x.n)+'</td><td class="n '+(x.t==='in'?'pos':'neg')+'">'+(x.t==='in'?'+':'-')+rp(x.a)+'</td><td><button class="e" data-e="'+x.id+'">Ubah</button> <button class="d" data-x="'+x.id+'">Hapus</button></td></tr>'});
+ $('k_lt').innerHTML=h;
+}
+
+function cats(){
+ ['in','out'].forEach(function(t){
+  $('k_c'+t).innerHTML=S.cat[t].map(function(c,i){return '<span class="chip">'+esc(c)+'<button data-r="'+t+':'+i+'">Ubah</button><button class="d" data-dc="'+t+':'+i+'">&times;</button></span>'}).join('');
+ });
+}
+
+function resetForm(){eid=null;$('k_ft').textContent='Catat transaksi baru';$('k_a').value='';$('k_n').value='';$('k_cancel').style.display='none'}
+function defDate(){var n=new Date();return new Date(n.getTime()-n.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+
+function saveTx(){
+ var d=$('k_d').value,a=parseFloat($('k_a').value);
+ if(!d){$('k_msg').textContent='Pilih tanggal.';return}
+ if(!(a>0)){$('k_msg').textContent='Isi jumlah lebih dari 0.';return}
+ var o={d:d,t:$('k_t').value,c:$('k_c').value,n:$('k_n').value.trim(),a:a};
+ if(eid){S.tx.forEach(function(x){if(x.id===eid){o.id=eid;for(var k in o)x[k]=o[k]}});$('k_msg').textContent='Perubahan disimpan.'}
+ else{o.id=Date.now();S.tx.push(o);$('k_msg').textContent='Tersimpan. Silakan catat berikutnya.'}
+ save();resetForm();
+}
+
+function rows(){
+ var T=sorted().reverse().map(function(x){return{Tanggal:x.d,Jenis:x.t==='in'?'Pemasukan':'Pengeluaran',Kategori:x.c,Catatan:x.n,'Jumlah (Rp)':x.a}});
+ var M=BL.map(function(b,k){var i=0,o=0;S.tx.forEach(function(x){if(mon(x)===k){if(x.t==='in')i+=x.a;else o+=x.a}});return{Bulan:b,'Pemasukan (Rp)':i,'Pengeluaran (Rp)':o,'Selisih (Rp)':i-o}});
+ var C={};S.tx.forEach(function(x){var k=x.t+'|'+x.c;C[k]=(C[k]||0)+x.a});
+ var K2=Object.keys(C).map(function(k){var p=k.split('|');return{Jenis:p[0]==='in'?'Pemasukan':'Pengeluaran',Kategori:p.slice(1).join('|'),'Total (Rp)':C[k]}});
+ return{T:T,M:M,C:K2};
+}
+function dl(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)}
+function xlsx(){
+ var r=rows();
+ if(!window.XLSX){alert('Library Excel gagal dimuat. Mengunduh CSV sebagai gantinya.');csv();return}
+ var wb=XLSX.utils.book_new();
+ XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(r.T),'Transaksi');
+ XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(r.M),'Ringkasan Bulanan');
+ XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(r.C),'Per Kategori');
+ XLSX.writeFile(wb,'Laporan-Keuangan-'+TH+'.xlsx');
+}
+function csv(){
+ var T=rows().T,h=Object.keys({Tanggal:1,Jenis:1,Kategori:1,Catatan:1,'Jumlah (Rp)':1});
+ var s=[h.join(',')].concat(T.map(function(r){return h.map(function(k){return '"'+String(r[k]).replace(/"/g,'""')+'"'}).join(',')})).join('\n');
+ dl(new Blob(['\ufeff'+s],{type:'text/csv;charset=utf-8'}),'Transaksi-'+TH+'.csv');
+}
+
+function init(){
+ $('k_thn').value=String(YR);
+ $('k_d').value=defDate();fillCat();dash();
+ $('k_tabs').onclick=function(e){var t=e.target.getAttribute('data-t');if(t)show(t)};
+ $('k_bln').onchange=dash;$('k_thn').onchange=dash;$('k_t').onchange=fillCat;$('k_q').oninput=list;$('k_f').onchange=list;
+ $('k_save').onclick=saveTx;
+ $('k_cancel').onclick=function(){resetForm();$('k_msg').textContent=''};
+ $('k_xl').onclick=xlsx;$('k_csv').onclick=csv;
+ $('k_bk').onclick=function(){dl(new Blob([JSON.stringify(S)],{type:'application/json'}),'cadangan-keuangan-'+TH+'.json')};
+ $('k_rs').onclick=function(){$('k_file').click()};
+ $('k_file').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result);if(!d.tx||!d.cat)throw 1;if(confirm('Ganti data sekarang dengan isi cadangan?')){S=d;save();cats();alert('Data dipulihkan.')}}catch(x){alert('File cadangan tidak valid.')}};r.readAsText(f);e.target.value=''};
+ $('k_rst').onclick=function(){if(confirm('Hapus SEMUA transaksi dan kategori? Data di Google Sheets juga akan terhapus di semua perangkat.')){try{localStorage.removeItem(K)}catch(e){}S={tx:[],cat:{in:['Gaji','Lainnya'],out:['Makanan & Minuman','Transportasi','Lainnya']}};save();cats()}};
+ $('keu').onclick=function(e){
+  var b=e.target,v;
+  if(v=b.getAttribute('data-x')){if(confirm('Hapus transaksi ini?')){S.tx=S.tx.filter(function(x){return x.id!==+v});save();list()}}
+  else if(v=b.getAttribute('data-e')){S.tx.forEach(function(x){if(x.id===+v){eid=x.id;show('input');$('k_d').value=x.d;$('k_t').value=x.t;fillCat();$('k_c').value=x.c;$('k_a').value=x.a;$('k_n').value=x.n;$('k_ft').textContent='Ubah transaksi';$('k_cancel').style.display='inline-block'}})}
+  else if(v=b.getAttribute('data-add')){var inp=$('k_n'+v),n=inp.value.trim();if(n&&S.cat[v].indexOf(n)<0){S.cat[v].push(n);save();inp.value='';cats()}}
+  else if(v=b.getAttribute('data-dc')){var p=v.split(':'),nm=S.cat[p[0]][p[1]];if(S.cat[p[0]].length>1&&confirm('Hapus kategori "'+nm+'"? Transaksi lama tetap tersimpan.')){S.cat[p[0]].splice(+p[1],1);save();cats()}}
+  else if(v=b.getAttribute('data-r')){var q=v.split(':'),old=S.cat[q[0]][q[1]],nn=prompt('Nama baru untuk kategori:',old);if(nn&&nn.trim()&&nn!==old){nn=nn.trim();S.cat[q[0]][q[1]]=nn;S.tx.forEach(function(x){if(x.t===q[0]&&x.c===old)x.c=nn});save();cats()}}
+ };
+}
+function start(pw){
+ if(!/^https:\/\//.test(API_URL)){$('k_lm').textContent='URL backend belum diisi di config.js.';return}
+ $('k_lm').textContent='Memuat...';
+ rpc('getData',[pw]).then(function(d){
+  PW=pw;try{localStorage.setItem('keu_pw',pw)}catch(e){}
+  S.tx=d.tx||[];if(d.cat&&d.cat['in'].length&&d.cat.out.length)S.cat=d.cat;REV=d.rev||0;
+  $('k_login').style.display='none';$('k_app').style.display='block';$('k_st').textContent='Tersambung ke Google Sheets';init();
+  if(!wired){wired=true;document.addEventListener('visibilitychange',function(){if(!document.hidden&&PW&&!busy)reload().catch(function(){})})}
+ }).catch(function(e){
+  try{localStorage.removeItem('keu_pw')}catch(x){}
+  $('k_login').style.display='block';$('k_lm').textContent=(e&&e.message?e.message:'Gagal masuk').replace(/^Error: /,'');
+ });
+}
+$('k_go').onclick=function(){start($('k_pw').value)};
+$('k_pw').onkeydown=function(e){if(e.key==='Enter')start($('k_pw').value)};
+$('k_out').onclick=function(){try{localStorage.removeItem('keu_pw')}catch(e){}PW='';S.tx=[];$('k_app').style.display='none';$('k_login').style.display='block';$('k_pw').value='';$('k_lm').textContent=''};
+var sv='';try{sv=localStorage.getItem('keu_pw')||''}catch(e){}
+if(sv)start(sv);
+})();
+</script>
+</div>
+
+</body>
+</html>

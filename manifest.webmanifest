@@ -1,0 +1,22 @@
+{
+  "name": "Catatan Keuangan",
+  "short_name": "Keuangan",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#e6e4e8",
+  "theme_color": "#e6e4e8",
+  "icons": [
+    {
+      "src": "logo-nd-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo-nd-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

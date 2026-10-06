@@ -316,7 +316,7 @@ function rpc(fn,args){
   return new Promise(function(r){setTimeout(r,1200)}).then(function(){return post(fn,args)}).catch(function(e2){
    if(e2&&e2.to)throw tmo();
    return diag().then(function(er){throw er})})})
- .then(function(t){var j;try{j=JSON.parse(t)}catch(x){throw netErr('Server mengembalikan halaman HTML, bukan data. Periksa URL deployment di config.js (akses harus "Anyone").')}
+ .then(function(t){var j;try{j=JSON.parse(t)}catch(x){var sn=String(t).replace(/<(script|style)[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,220);throw netErr('Server mengembalikan halaman HTML, bukan data. Isi halaman: "'+(sn||'kosong')+'". Periksa URL deployment di config.js (harus berakhiran /exec, akses "Anyone").')}
   if(j.error)throw new Error(j.error);return j.data})}
 function apply(d){d=d||{};S.tx=Array.isArray(d.tx)?d.tx.filter(function(x){return x&&/^\d{4}-\d{2}-\d{2}$/.test(x.d)&&(x.t==='in'||x.t==='out')&&x.a>0}):[];
  if(d.cat&&Array.isArray(d.cat['in'])&&Array.isArray(d.cat.out)&&d.cat['in'].length&&d.cat.out.length)S.cat=d.cat;REV=d.rev||0}

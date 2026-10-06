@@ -301,14 +301,23 @@ function stamp(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+
 function icon(c){return esc((String(c).trim().charAt(0)||'•').toUpperCase())}
 function toast(m,err){var t=$('toast');t.textContent=m;t.className='show'+(err?' err':'');clearTimeout(toast.h);toast.h=setTimeout(function(){t.className=''},2600)}
 function netErr(m){var e=new Error(m);e.net=1;return e}
+function post(fn,args){
+ var ac=window.AbortController?new AbortController():null,to=0,tm=setTimeout(function(){to=1;ac&&ac.abort()},30000);
+ return fetch(API,{method:'POST',redirect:'follow',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args}),signal:ac?ac.signal:undefined})
+ .then(function(r){clearTimeout(tm);return r.text()},function(){clearTimeout(tm);throw{to:to}})}
+function diag(){
+ if(navigator.onLine===false)return Promise.resolve(netErr('Tidak ada koneksi internet.'));
+ return fetch(API,{method:'GET',mode:'no-cors',cache:'no-store'}).then(function(){return netErr('Server terjangkau tetapi aksesnya ditolak. Pastikan deployment Apps Script diatur "Anyone" dan URL di config.js adalah URL deployment terbaru.')},function(){return netErr('Tidak bisa terhubung ke server. Periksa koneksi internet.')})}
 function rpc(fn,args){
- var ac=window.AbortController?new AbortController():null,tm=setTimeout(function(){ac&&ac.abort()},25000);
- return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args}),signal:ac?ac.signal:undefined})
- .catch(function(){throw netErr('Tidak bisa terhubung ke server. Periksa koneksi internet.')})
- .then(function(r){return r.text()})
+ var tmo=function(){return netErr('Server terlalu lama merespons. Coba lagi sebentar lagi.')};
+ return post(fn,args).catch(function(e){
+  if(e&&e.to)throw tmo();
+  if(fn!=='getData')return diag().then(function(er){throw er});
+  return new Promise(function(r){setTimeout(r,1200)}).then(function(){return post(fn,args)}).catch(function(e2){
+   if(e2&&e2.to)throw tmo();
+   return diag().then(function(er){throw er})})})
  .then(function(t){var j;try{j=JSON.parse(t)}catch(x){throw netErr('Server mengembalikan halaman HTML, bukan data. Periksa URL deployment di config.js (akses harus "Anyone").')}
-  if(j.error)throw new Error(j.error);return j.data})
- .then(function(d){clearTimeout(tm);return d},function(e){clearTimeout(tm);throw e})}
+  if(j.error)throw new Error(j.error);return j.data})}
 function apply(d){d=d||{};S.tx=Array.isArray(d.tx)?d.tx.filter(function(x){return x&&/^\d{4}-\d{2}-\d{2}$/.test(x.d)&&(x.t==='in'||x.t==='out')&&x.a>0}):[];
  if(d.cat&&Array.isArray(d.cat['in'])&&Array.isArray(d.cat.out)&&d.cat['in'].length&&d.cat.out.length)S.cat=d.cat;REV=d.rev||0}
 function reload(){return rpc('getData',[PW]).then(function(d){if(busy||again)return;apply(d);fillSel();render();setSt('Tersinkron','ok')})}

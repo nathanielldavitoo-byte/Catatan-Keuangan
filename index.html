@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Keuangan">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://script.google.com"><link rel="preconnect" href="https://script.googleusercontent.com" crossorigin><link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Catatan Keuangan</title>
 <style>
@@ -286,10 +286,9 @@ document.addEventListener('dblclick',pd);
 <div class="ov" id="ov" hidden><div class="sheet" role="dialog" aria-modal="true"><h3 id="ov_t"></h3><p class="mut" id="ov_m"></p><input id="ov_i" hidden><div class="oa"><button class="btn g" id="ov_c">Batal</button><button class="btn" id="ov_ok">OK</button></div></div></div>
 <div id="toast"></div>
 <script src="config.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 (function(){
-var API=window.KEU_API_URL||'',REV=0,PW='',busy=0,again=0,eid=null,typ='out',cur='',tab='dash',wired=0;
+var API=window.KEU_API_URL||'',REV=0,PW='',busy=0,again=0,eid=null,typ='out',cur='',tab='dash',wired=0,ps=0,CK='keu_cache';
 var BL=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 var COL=['var(--c0)','var(--c1)','var(--c2)','var(--c3)','var(--c4)','var(--c5)','var(--c6)','var(--c7)'];
 var S={tx:[],cat:{in:['Gaji','Bonus','Usaha / Freelance','Investasi','Lainnya'],out:['Makanan dan Minuman','Transportasi','Tagihan dan Utilitas','Tempat Tinggal','Kesehatan','Pendidikan','Hiburan','Belanja','Cicilan / Utang','Tabungan dan Investasi','Donasi / Sosial','Lainnya']}};
@@ -300,6 +299,9 @@ function rp(n){return 'Rp '+num(n)}
 function stamp(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
 function icon(c){return esc((String(c).trim().charAt(0)||'•').toUpperCase())}
 function toast(m,err){var t=$('toast');t.textContent=m;t.className='show'+(err?' err':'');clearTimeout(toast.h);toast.h=setTimeout(function(){t.className=''},2600)}
+function sha(pw){if(!(window.crypto&&crypto.subtle&&window.TextEncoder))return Promise.resolve('');return crypto.subtle.digest('SHA-256',new TextEncoder().encode('keu:'+API+':'+pw)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return('0'+x.toString(16)).slice(-2)}).join('')},function(){return''})}
+function cacheGet(){try{return JSON.parse(localStorage.getItem(CK)||'null')}catch(e){return null}}
+function cachePut(h){try{var o=cacheGet()||{};localStorage.setItem(CK,JSON.stringify({h:h||o.h||'',tx:S.tx,cat:S.cat,rev:REV}))}catch(e){}}
 function netErr(m){var e=new Error(m);e.net=1;return e}
 function post(fn,args){
  var ac=window.AbortController?new AbortController():null,to=0,tm=setTimeout(function(){to=1;ac&&ac.abort()},30000);
@@ -319,12 +321,12 @@ function rpc(fn,args){
  .then(function(t){var j;try{j=JSON.parse(t)}catch(x){var sn=String(t).replace(/<(script|style)[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,220);throw netErr('Server mengembalikan halaman HTML, bukan data. Isi halaman: "'+(sn||'kosong')+'". Periksa URL deployment di config.js (harus berakhiran /exec, akses "Anyone").')}
   if(j.error)throw new Error(j.error);return j.data})}
 function apply(d){d=d||{};S.tx=Array.isArray(d.tx)?d.tx.filter(function(x){return x&&/^\d{4}-\d{2}-\d{2}$/.test(x.d)&&(x.t==='in'||x.t==='out')&&x.a>0}):[];
- if(d.cat&&Array.isArray(d.cat['in'])&&Array.isArray(d.cat.out)&&d.cat['in'].length&&d.cat.out.length)S.cat=d.cat;REV=d.rev||0}
+ if(d.cat&&Array.isArray(d.cat['in'])&&Array.isArray(d.cat.out)&&d.cat['in'].length&&d.cat.out.length)S.cat=d.cat;REV=d.rev||0;cachePut()}
 function reload(){return rpc('getData',[PW]).then(function(d){if(busy||again)return;apply(d);fillSel();render();setSt('Tersinkron','ok')})}
 function save(){
  if(busy){again=1;return}busy=1;setSt('Menyimpan','busy');
- rpc('saveData',[JSON.stringify(S),PW,REV]).then(function(r){busy=0;REV=r.rev;if(again){again=0;save()}else setSt('Tersinkron','ok')})
- .catch(function(e){busy=0;again=0;if(/KONFLIK/.test(e.message)){toast('Data berubah di perangkat lain. Dimuat ulang, ulangi perubahan Anda.',1);reload().catch(function(){})}else{setSt('Gagal, ketuk untuk ulangi','err');toast('Gagal menyimpan: '+e.message,1)}});
+ rpc('saveData',[JSON.stringify(S),PW,REV]).then(function(r){busy=0;REV=r.rev;ps=0;cachePut();if(again){again=0;save()}else setSt('Tersinkron','ok')})
+ .catch(function(e){busy=0;again=0;if(/KONFLIK/.test(e.message)){toast('Data berubah di perangkat lain. Dimuat ulang, ulangi perubahan Anda.',1);reload().catch(function(){})}else{ps=1;setSt('Gagal, ketuk untuk ulangi','err');toast('Gagal menyimpan: '+e.message,1)}});
 }
 function mon(x){return +x.d.slice(5,7)-1}
 function sorted(L){return L.slice().sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:b.id-a.id})}
@@ -410,7 +412,9 @@ function csv(){
  dl(new Blob(['\ufeff'+s],{type:'text/csv;charset=utf-8'}),'Transaksi-'+stamp()+'.csv');
 }
 function xlsx(){
- if(!window.XLSX){toast('Library Excel gagal dimuat. Mengunduh CSV.',1);return csv()}
+ if(window.XLSX)return doX();
+ var sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';sc.onload=doX;sc.onerror=function(){toast('Library Excel gagal dimuat. Mengunduh CSV.',1);csv()};document.head.appendChild(sc)}
+function doX(){
  var r=rows(),wb=XLSX.utils.book_new();
  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(r.T),'Transaksi');
  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(r.M),'Ringkasan Bulanan');
@@ -463,20 +467,31 @@ function init(){
   });
  }
 }
+function enterApp(){$('login').hidden=true;$('app').hidden=false;init();show('dash')}
+function loginDone(){var b=$('go');b.classList.remove('ld');b.disabled=false}
 function start(pw){
  if(!/^https:\/\//.test(API)){$('lm').textContent='URL backend belum diisi di config.js.';return}
  var b=$('go');b.classList.add('ld');b.disabled=true;$('lm').textContent='';
- rpc('getData',[pw]).then(function(d){
-  PW=pw;try{localStorage.setItem('keu_pw',pw)}catch(e){}
-  apply(d);$('login').hidden=true;$('app').hidden=false;setSt('Tersinkron','ok');init();show('dash');
- }).catch(function(e){
-  if(!(e&&e.net)){try{localStorage.removeItem('keu_pw')}catch(x){}}
-  $('login').hidden=false;$('lm').textContent=(e&&e.message?e.message:'Gagal masuk').replace(/^Error: /,'');
-  var bx=$('lb');bx.classList.remove('shake');void bx.offsetWidth;bx.classList.add('shake');
- }).then(function(){b.classList.remove('ld');b.disabled=false});
+ sha(pw).then(function(h){
+  var c=cacheGet();
+  if(h&&c&&c.h===h&&Array.isArray(c.tx)){
+   PW=pw;try{localStorage.setItem('keu_pw',pw)}catch(e){}
+   apply(c);setSt('Menyinkronkan','busy');enterApp();loginDone();
+   rpc('getData',[pw]).then(function(d){if(busy||again)return;apply(d);fillSel();render();setSt('Tersinkron','ok')}).catch(function(e){
+    if(e&&e.net){setSt('Offline, ketuk untuk ulangi','err')}
+    else{try{localStorage.removeItem(CK)}catch(x){}logout();$('lm').textContent=(e&&e.message?e.message:'Gagal masuk').replace(/^Error: /,'')}});
+   return}
+  rpc('getData',[pw]).then(function(d){
+   PW=pw;try{localStorage.setItem('keu_pw',pw)}catch(e){}
+   apply(d);cachePut(h);setSt('Tersinkron','ok');enterApp();
+  }).catch(function(e){
+   if(!(e&&e.net)){try{localStorage.removeItem('keu_pw')}catch(x){}}
+   $('login').hidden=false;$('lm').textContent=(e&&e.message?e.message:'Gagal masuk').replace(/^Error: /,'');
+   var bx=$('lb');bx.classList.remove('shake');void bx.offsetWidth;bx.classList.add('shake');
+  }).then(loginDone)});
 }
 $('lb').onsubmit=function(e){e.preventDefault();if(!$('pw').value)return($('lm').textContent='Masukkan kata sandi');start($('pw').value)};
-$('st').onclick=function(){if(this.getAttribute('data-s')==='err'&&PW&&!busy)save()};
+$('st').onclick=function(){if(this.getAttribute('data-s')==='err'&&PW&&!busy){if(ps)save();else{setSt('Menyinkronkan','busy');reload().catch(function(){setSt('Offline, ketuk untuk ulangi','err')})}}};
 
 $('eye').onclick=function(){var p=$('pw');p.type=p.type==='password'?'text':'password'};
 var sv='';try{sv=localStorage.getItem('keu_pw')||''}catch(e){}

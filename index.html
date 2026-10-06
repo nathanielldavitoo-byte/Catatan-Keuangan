@@ -210,6 +210,23 @@ input,select,textarea{font-size:16px}html,body{touch-action:pan-x pan-y;-ms-touc
  .nav button[data-v=input]::after{display:none}.nav button[data-v=input] svg{width:28px;height:28px}
 }
 @media(min-width:1000px){#cfg,.gr{display:none}.sc.gg{grid-column:auto}}
+.sc.dk small{color:rgba(255,255,255,.55);font-size:12px;line-height:1.4}
+.sc.dk .mt{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.sc.dk .mt div{background:rgba(255,255,255,.1);border-radius:18px;padding:11px 13px;min-width:0}
+.sc.dk .mt span{font-size:11px}.sc.dk .mt b{display:block;font-size:14px!important;font-weight:600;margin-top:2px}
+.cmp{margin:2px 0 16px}.cb{height:12px;border-radius:99px;background:var(--steel);overflow:hidden}
+.cb i{display:block;height:100%;width:0;background:var(--ink);border-radius:99px;transition:width 1.8s cubic-bezier(.4,0,.2,1)}
+.cl{display:flex;justify-content:space-between;gap:10px;margin-top:12px}.cl span{display:flex;flex-direction:column;gap:2px;min-width:0}.cl span:last-child{text-align:right;align-items:flex-end}
+.cl em{font-style:normal;font-size:12px;color:var(--mut)}.cl em i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}.cl b{font-size:15px;font-weight:600}
+.cd{margin-top:12px;padding:10px 16px;border-radius:99px;background:var(--soft);font-size:13px;display:flex;justify-content:space-between;align-items:center}.cd span{color:var(--mut)}.cd b{font-weight:600}
+@media(min-width:1000px){.sc.dk{grid-column:span 2}}
+@media(max-width:999px){
+ .top{background:var(--bg);padding-top:calc(18px + env(safe-area-inset-top));padding-bottom:14px;z-index:10;box-shadow:0 0 0 1px var(--bg)}
+ .top .lg2{width:58px;height:46px;background-position:left center;overflow:visible;opacity:1}
+ .wrap{padding-top:2px}
+ .pg{scroll-margin-top:calc(90px + env(safe-area-inset-top))}
+ html{scroll-padding-top:calc(90px + env(safe-area-inset-top))}
+}
 </style>
 <script>
 (function(){
@@ -328,21 +345,23 @@ function chart(keys,lab,pi,po,mx,sel){
 function dash(re){
  var y=$('yr').value,m=$('mo').value,all=y==='all',sel=!all&&m!=='all',L=filt(),i=0,o=0,cat={},src={};
  L.forEach(function(x){if(x.t==='in'){i+=x.a;src[x.c]=(src[x.c]||0)+x.a}else{o+=x.a;cat[x.c]=(cat[x.c]||0)+x.a}});
+ var pad2=('0'+(+m+1)).slice(-2),cut=all?'9999':(m==='all'?y+'-12-31':y+'-'+pad2+'-31'),stt=all?'0000':(m==='all'?y+'-01-01':y+'-'+pad2+'-01'),sisa=0,awal=0,lbl=all?'saat ini':(m==='all'?'akhir '+y:BL[+m]+' '+y);
+ S.tx.forEach(function(x){var v=x.t==='in'?x.a:-x.a;if(x.d<=cut)sisa+=v;if(x.d<stt)awal+=v});
  var rate=i>0?Math.round((i-o)/i*100):0,pr=Math.max(0,Math.min(100,rate)),h='';
  h+='<div class="gr"><span>Ringkasan keuangan</span><b>'+(m==='all'?'Semua bulan':BL[+m])+' '+(all?'':y)+'</b></div>';
- h+='<div class="stats"><div class="sc dk"><span>Saldo</span><b data-k="bal" data-n="'+(i-o)+'">'+rp(i-o)+'</b></div><div class="sc"><span>Pemasukan</span><b data-k="in" data-n="'+i+'">'+rp(i)+'</b></div><div class="sc"><span>Pengeluaran</span><b data-k="out" data-n="'+o+'">'+rp(o)+'</b></div><div class="sc rt gg"><svg class="gs" viewBox="0 0 200 108"><path class="gt" pathLength="100" d="M20 100A80 80 0 0 1 180 100"/><path class="gf" pathLength="100" d="M20 100A80 80 0 0 1 180 100" style="stroke-dashoffset:100" data-to="'+(100-pr)+'"/></svg><div class="gv"><b data-k="rate" data-n="'+rate+'" data-f="p">'+rate+'%</b><span>Rasio ditabung</span></div></div></div>';
+ h+='<div class="stats"><div class="sc dk"><span>Sisa saldo</span><b data-k="bal" data-n="'+sisa+'">'+rp(sisa)+'</b><small>Total pemasukan dikurangi pengeluaran sampai '+lbl+'</small><div class="mt"><div><span>Saldo awal periode</span><b data-k="awal" data-n="'+awal+'">'+rp(awal)+'</b></div><div><span>Selisih periode</span><b data-k="sel" data-n="'+(i-o)+'">'+rp(i-o)+'</b></div></div></div><div class="sc"><span>Pemasukan</span><b data-k="in" data-n="'+i+'">'+rp(i)+'</b></div><div class="sc"><span>Pengeluaran</span><b data-k="out" data-n="'+o+'">'+rp(o)+'</b></div><div class="sc rt gg"><svg class="gs" viewBox="0 0 200 108"><path class="gt" pathLength="100" d="M20 100A80 80 0 0 1 180 100"/><path class="gf" pathLength="100" d="M20 100A80 80 0 0 1 180 100" style="stroke-dashoffset:100" data-to="'+(100-pr)+'"/></svg><div class="gv"><b data-k="rate" data-n="'+rate+'" data-f="p">'+rate+'%</b><span>Rasio ditabung</span></div></div></div>';
  var keys=all?yrs():BL.map(function(b,j){return j}),lab=all?keys:BL.map(function(b){return b.slice(0,3)}),pi=[],po=[];
  var bi={},bo={};S.tx.forEach(function(x){var k=all?x.d.slice(0,4):(x.d.slice(0,4)===y?mon(x):null);if(k===null)return;if(x.t==='in')bi[k]=(bi[k]||0)+x.a;else bo[k]=(bo[k]||0)+x.a});
  keys.forEach(function(k){pi.push(bi[k]||0);po.push(bo[k]||0)});
  var mx=Math.max.apply(null,pi.concat(po).concat([1]));
- h+='<div class="g2"><div class="card"><h2>Pemasukan vs pengeluaran</h2>'+chart(keys,lab,pi,po,mx,sel?+m:-1)+'<div class="lgd"><span><i class="bi"></i>Pemasukan</span><span><i class="bo"></i>Pengeluaran</span></div></div>';
+ h+='<div class="g2"><div class="card"><h2>Pemasukan vs pengeluaran</h2><div class="cmp"><div class="cb"><i data-w="'+(i+o>0?(i/(i+o)*100).toFixed(1):0)+'"></i></div><div class="cl"><span><em><i class="bi"></i>Pemasukan</em><b>'+rp(i)+'</b></span><span><em><i class="bo"></i>Pengeluaran</em><b>'+rp(o)+'</b></span></div><div class="cd"><span>Selisih periode</span><b>'+(i-o<0?'\u2212':'+')+rp(Math.abs(i-o))+'</b></div></div>'+chart(keys,lab,pi,po,mx,sel?+m:-1)+'<div class="lgd"><span><i class="bi"></i>Pemasukan</span><span><i class="bo"></i>Pengeluaran</span></div></div>';
  var ce=Object.keys(cat).sort(function(a,b){return cat[b]-cat[a]}),acc=0,grad=[];
  ce.forEach(function(c,j){var p=cat[c]/o*100;grad.push(COL[j%COL.length]+' '+acc+'% '+(acc+p)+'%');acc+=p});
  h+='<div class="card"><h2>Alokasi pengeluaran</h2>'+(o>0?'<div class="donut"><div class="ring" style="background:conic-gradient('+grad.join(',')+')"><span>Total<br><b>'+rp(o)+'</b></span></div><div class="leg">'+ce.slice(0,6).map(function(c,j){return'<div><span><i style="background:'+COL[j%COL.length]+'"></i>'+esc(c)+'</span><b>'+Math.round(cat[c]/o*100)+'%</b></div>'}).join('')+'</div></div>':'<div class="empty">Belum ada pengeluaran pada periode ini</div>')+'</div></div>';
  var se=Object.keys(src).sort(function(a,b){return src[b]-src[a]}),rc=sorted(L).slice(0,5);
  h+='<div class="g2"><div class="card"><h2>Sumber pemasukan</h2>'+(i>0?se.map(function(c){return'<div class="src"><div class="l"><span>'+esc(c)+'</span><b>'+rp(src[c])+'</b></div><div class="b"><i style="width:'+src[c]/i*100+'%"></i></div></div>'}).join(''):'<div class="empty">Belum ada pemasukan pada periode ini</div>')+'</div>';
  h+='<div class="card"><h2>Transaksi terbaru</h2>'+(rc.length?rc.map(txh).join(''):'<div class="empty">Belum ada transaksi. Ketuk Catat untuk memulai.</div>')+'</div></div>';
- var d=$('d_body');d.className=re===1?'re':'';d.innerHTML=h;countAll(d);requestAnimationFrame(function(){requestAnimationFrame(function(){var g=d.querySelector('.gf');if(g)g.style.strokeDashoffset=g.getAttribute('data-to')})});
+ var d=$('d_body');d.className=re===1?'re':'';d.innerHTML=h;countAll(d);requestAnimationFrame(function(){requestAnimationFrame(function(){var g=d.querySelector('.gf');if(g)g.style.strokeDashoffset=g.getAttribute('data-to');var w=d.querySelector('.cb i');if(w)w.style.width=w.getAttribute('data-w')+'%'})});
 }
 function txh(x,n){return'<div class="tx" style="--i:'+Math.min(n||0,10)+'" data-a="edit" data-v="'+x.id+'"><div class="ic">'+icon(x.c)+'</div><div class="m"><b>'+esc(x.c)+'</b><span class="mut">'+esc(x.n||'')+(x.n?' \u00b7 ':'')+x.d.slice(8)+'/'+x.d.slice(5,7)+'</span></div><div class="a '+(x.t==='in'?'pos':'neg')+'">'+(x.t==='in'?'+':'\u2212')+num(x.a)+'</div></div>'}
 function list(){

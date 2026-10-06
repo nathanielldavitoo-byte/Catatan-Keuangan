@@ -139,7 +139,7 @@ select,.per select{border-radius:99px;border:0;background-color:var(--card);padd
 .lt{font-family:var(--serif);font-weight:500;letter-spacing:.3em}
 .lb input{border-radius:99px;border:0;padding-left:20px}.pwr input{padding-right:50px}
 .nav{border:0;border-radius:99px;background:var(--card)}.nav .ind{background:var(--gray);border-radius:99px}.nav button.on{color:#fff}
-input,select,textarea{font-size:16px}html,body{touch-action:pan-x pan-y}
+input,select,textarea{font-size:16px}html,body{touch-action:pan-x pan-y;-ms-touch-action:pan-x pan-y;overscroll-behavior-x:none}
 .nlogo{display:none}.ptitle{display:none}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
 .sc{background:var(--card);border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -178,6 +178,54 @@ input,select,textarea{font-size:16px}html,body{touch-action:pan-x pan-y}
 .sc b{white-space:nowrap;font-size:clamp(15px,4.9vw,21px)}.sc.dk b{font-size:clamp(24px,8vw,34px)}
 @media(min-width:1000px){.sc b{font-size:22px}.sc.dk b{font-size:27px}}
 </style>
+<style id="theme3">
+:root{--bg:#ececec;--card:#fff;--soft:#f4f4f4;--ink:#161616;--sh:0 14px 40px rgba(0,0,0,.05)}
+@media(prefers-color-scheme:dark){:root{--bg:#0c0c0d;--card:#18181a;--soft:#222225;--ink:#f3f3f3;--sh:none}}
+.top{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
+.card{border-radius:34px;padding:22px}
+.sc{border-radius:30px;padding:20px}
+.sc.dk{background:#161616;color:#fff}
+.gr{margin:6px 4px 14px}.gr span{display:block;color:var(--mut);font-size:15px}.gr b{font:600 30px/1.15 var(--serif);letter-spacing:-.02em}
+.per select{background-color:var(--card);height:46px}
+.sc.gg{display:block;text-align:center;padding:24px 18px 20px}
+.gs{width:100%;max-width:260px;display:block;margin:0 auto}
+.gs path{fill:none;stroke-width:15;stroke-linecap:round}.gt{stroke:var(--soft)}.gf{stroke:var(--ink);stroke-dasharray:100;transition:stroke-dashoffset 2s cubic-bezier(.4,0,.2,1)}
+.gv{margin-top:-58px;position:relative}.gv b{display:block;font:600 40px/1.1 var(--serif)!important;letter-spacing:-.03em}.gv span{font-size:13px;color:var(--mut)}
+.lc svg{width:100%;height:auto;display:block;overflow:visible}
+.lc .gl{stroke:var(--bd);stroke-dasharray:2 5}.lc text{fill:var(--mut);font-size:10px}.lc text.on{fill:var(--ink);font-weight:700}
+.lc .ln{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2s cubic-bezier(.4,0,.2,1) forwards}
+.lc .ln.i{stroke:var(--ink)}.lc .ln.o{stroke:var(--steel);animation-delay:.25s}
+.lc .tp{opacity:0;animation:pgin .6s ease 1.5s forwards}.lc .tp rect,.lc .tp circle{fill:var(--ink)}.lc .tp text{fill:var(--bg);font-size:11px;font-weight:600}
+@keyframes draw{to{stroke-dashoffset:0}}
+.ring{animation-duration:1.9s}
+@media(max-width:999px){
+ .top{grid-template-columns:auto 1fr auto auto;gap:8px}
+ .top .lg2{grid-column:1;grid-row:1;width:46px;height:36px}.top .pill{grid-column:2;grid-row:1;margin-left:6px;justify-self:start!important}
+ #cfg{grid-column:3;grid-row:1}#out{grid-column:4;grid-row:1}
+ .nav{grid-template-columns:1fr 92px 1fr;max-width:380px;border-radius:34px;padding:10px 14px;overflow:visible;height:66px;align-items:center}
+ .nav .ind,.nav button[data-v=cat]{display:none}
+ .nav button{color:var(--mut)}.nav button.on{color:var(--ink)}
+ .nav button.on::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--ink);margin-top:1px}
+ .nav button[data-v=input]{width:62px;height:62px;border-radius:50%;margin:-40px auto 0;background:#161616;color:#fff!important;font-size:0;gap:0;justify-content:center;box-shadow:0 0 0 7px var(--bg),0 10px 24px rgba(0,0,0,.2)}
+ .nav button[data-v=input]::after{display:none}.nav button[data-v=input] svg{width:28px;height:28px}
+}
+@media(min-width:1000px){#cfg,.gr{display:none}.sc.gg{grid-column:auto}}
+</style>
+<script>
+(function(){
+var M='width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover';
+function pd(e){e.preventDefault()}
+['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,pd,{passive:false})});
+document.addEventListener('touchstart',function(e){if(e.touches.length>1)e.preventDefault()},{passive:false});
+document.addEventListener('touchmove',function(e){if(e.touches.length>1||(e.scale&&e.scale!==1))e.preventDefault()},{passive:false});
+var lt=0;document.addEventListener('touchend',function(e){var n=Date.now();if(n-lt<350&&!(e.target.closest&&e.target.closest('input,select,button,a')))e.preventDefault();lt=n},{passive:false});
+window.addEventListener('wheel',function(e){if(e.ctrlKey)e.preventDefault()},{passive:false,capture:true});
+window.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&['+','=','-','_','0','Add','Subtract'].indexOf(e.key)>-1)e.preventDefault()},true);
+function fix(){var m=document.querySelector('meta[name=viewport]');if(m){m.setAttribute('content',M)}}
+if(window.visualViewport)visualViewport.addEventListener('resize',function(){if(visualViewport.scale>1.001){fix();window.scrollTo(window.scrollX,window.scrollY)}});
+document.addEventListener('dblclick',pd);
+})();
+</script>
 </head>
 <body>
 <div class="login" id="login"><div class="lw">
@@ -190,7 +238,7 @@ input,select,textarea{font-size:16px}html,body{touch-action:pan-x pan-y}
 
 <div id="app" hidden>
 <div class="wrap">
- <header class="top"><span class="pill" id="st" data-s="ok" style="justify-self:start"><i class="dot"></i><span id="stt">Memuat</span></span><div class="lg2" role="img" aria-label="ND - Catatan Keuangan"></div><h1 class="ptitle" id="ptitle">Dashboard</h1><button class="ib" id="out" aria-label="Keluar" title="Keluar" style="justify-self:end"><svg class="i" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></button></header>
+ <header class="top"><span class="pill" id="st" data-s="ok" style="justify-self:start"><i class="dot"></i><span id="stt">Memuat</span></span><div class="lg2" role="img" aria-label="ND - Catatan Keuangan"></div><h1 class="ptitle" id="ptitle">Dashboard</h1><button class="ib" id="cfg" data-a="tab" data-v="cat" aria-label="Pengaturan" title="Pengaturan"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><button class="ib" id="out" aria-label="Keluar" title="Keluar" style="justify-self:end"><svg class="i" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></button></header>
  <div id="p_dash" class="pg"><div class="per"><select id="mo"></select><select id="yr"></select></div><div id="d_body"></div></div>
  <div id="p_input" class="pg" hidden>
   <div class="card"><h2 id="ft">Catat transaksi</h2>
@@ -269,23 +317,32 @@ function show(t){
  $('nav').style.setProperty('--i',idx);$('ptitle').textContent=['Dashboard','Catat transaksi','Transaksi','Pengaturan'][idx];render();window.scrollTo({top:0,behavior:'smooth'});
 }
 function render(){if(tab==='dash')dash();else if(tab==='list')list();else if(tab==='cat')cats();else form()}
+function sm(p){var d='M'+p[0][0]+' '+p[0][1];for(var i=0;i<p.length-1;i++){var a=p[i-1]||p[i],b=p[i],c=p[i+1],e=p[i+2]||c;d+=' C'+(b[0]+(c[0]-a[0])/6)+' '+(b[1]+(c[1]-a[1])/6)+' '+(c[0]-(e[0]-b[0])/6)+' '+(c[1]-(e[1]-b[1])/6)+' '+c[0]+' '+c[1]}return d}
+function chart(keys,lab,pi,po,mx,sel){
+ var W=340,H=190,P=16,B=24,n=keys.length,X=function(i){return n>1?+(P+i*(W-2*P)/(n-1)).toFixed(1):W/2},Y=function(v){return +(H-B-8-v/mx*(H-B-40)).toFixed(1)},g='',t='';
+ var a=pi.map(function(v,i){return[X(i),Y(v)]}),b=po.map(function(v,i){return[X(i),Y(v)]});
+ keys.forEach(function(k,i){g+='<line class="gl" x1="'+X(i)+'" x2="'+X(i)+'" y1="10" y2="'+(H-B)+'"/><text x="'+X(i)+'" y="'+(H-6)+'" text-anchor="middle"'+(i===sel?' class="on"':'')+'>'+lab[i]+'</text>'});
+ if(sel>=0&&sel<n){var tx=Math.max(62,Math.min(W-62,a[sel][0])),ty=Math.max(2,Math.min(a[sel][1],b[sel][1])-34),v=pi[sel]-po[sel];
+  t='<g class="tp"><circle cx="'+a[sel][0]+'" cy="'+a[sel][1]+'" r="4.5"/><circle cx="'+b[sel][0]+'" cy="'+b[sel][1]+'" r="4.5"/><rect x="'+(tx-60)+'" y="'+ty+'" width="120" height="26" rx="13"/><text x="'+tx+'" y="'+(ty+17)+'" text-anchor="middle">'+(v<0?'\u2212':'')+rp(Math.abs(v))+'</text></g>'}
+ return'<div class="lc"><svg viewBox="0 0 '+W+' '+H+'">'+g+'<path class="ln o" pathLength="1" d="'+sm(b)+'"/><path class="ln i" pathLength="1" d="'+sm(a)+'"/>'+t+'</svg></div>'}
 function dash(re){
  var y=$('yr').value,m=$('mo').value,all=y==='all',sel=!all&&m!=='all',L=filt(),i=0,o=0,cat={},src={};
  L.forEach(function(x){if(x.t==='in'){i+=x.a;src[x.c]=(src[x.c]||0)+x.a}else{o+=x.a;cat[x.c]=(cat[x.c]||0)+x.a}});
  var rate=i>0?Math.round((i-o)/i*100):0,pr=Math.max(0,Math.min(100,rate)),h='';
- h+='<div class="stats"><div class="sc dk"><span>Saldo</span><b data-k="bal" data-n="'+(i-o)+'">'+rp(i-o)+'</b></div><div class="sc"><span>Pemasukan</span><b data-k="in" data-n="'+i+'">'+rp(i)+'</b></div><div class="sc"><span>Pengeluaran</span><b data-k="out" data-n="'+o+'">'+rp(o)+'</b></div><div class="sc rt"><span>Rasio ditabung</span><div class="rg" style="--p:'+pr+'"><em>'+rate+'%</em></div></div></div>';
+ h+='<div class="gr"><span>Ringkasan keuangan</span><b>'+(m==='all'?'Semua bulan':BL[+m])+' '+(all?'':y)+'</b></div>';
+ h+='<div class="stats"><div class="sc dk"><span>Saldo</span><b data-k="bal" data-n="'+(i-o)+'">'+rp(i-o)+'</b></div><div class="sc"><span>Pemasukan</span><b data-k="in" data-n="'+i+'">'+rp(i)+'</b></div><div class="sc"><span>Pengeluaran</span><b data-k="out" data-n="'+o+'">'+rp(o)+'</b></div><div class="sc rt gg"><svg class="gs" viewBox="0 0 200 108"><path class="gt" pathLength="100" d="M20 100A80 80 0 0 1 180 100"/><path class="gf" pathLength="100" d="M20 100A80 80 0 0 1 180 100" style="stroke-dashoffset:100" data-to="'+(100-pr)+'"/></svg><div class="gv"><b data-k="rate" data-n="'+rate+'" data-f="p">'+rate+'%</b><span>Rasio ditabung</span></div></div></div>';
  var keys=all?yrs():BL.map(function(b,j){return j}),lab=all?keys:BL.map(function(b){return b.slice(0,3)}),pi=[],po=[];
  var bi={},bo={};S.tx.forEach(function(x){var k=all?x.d.slice(0,4):(x.d.slice(0,4)===y?mon(x):null);if(k===null)return;if(x.t==='in')bi[k]=(bi[k]||0)+x.a;else bo[k]=(bo[k]||0)+x.a});
  keys.forEach(function(k){pi.push(bi[k]||0);po.push(bo[k]||0)});
  var mx=Math.max.apply(null,pi.concat(po).concat([1]));
- h+='<div class="g2"><div class="card"><h2>Pemasukan vs pengeluaran</h2><div class="bars">'+keys.map(function(k,j){return'<div class="col'+(sel&&j!==+m?' dim':'')+'" style="--i:'+j+'"><div class="pair"><i class="bi" style="height:'+pi[j]/mx*100+'%"></i><i class="bo" style="height:'+po[j]/mx*100+'%"></i></div>'+lab[j]+'</div>'}).join('')+'</div><div class="lgd"><span><i class="bi"></i>Pemasukan</span><span><i class="bo"></i>Pengeluaran</span></div></div>';
+ h+='<div class="g2"><div class="card"><h2>Pemasukan vs pengeluaran</h2>'+chart(keys,lab,pi,po,mx,sel?+m:-1)+'<div class="lgd"><span><i class="bi"></i>Pemasukan</span><span><i class="bo"></i>Pengeluaran</span></div></div>';
  var ce=Object.keys(cat).sort(function(a,b){return cat[b]-cat[a]}),acc=0,grad=[];
  ce.forEach(function(c,j){var p=cat[c]/o*100;grad.push(COL[j%COL.length]+' '+acc+'% '+(acc+p)+'%');acc+=p});
  h+='<div class="card"><h2>Alokasi pengeluaran</h2>'+(o>0?'<div class="donut"><div class="ring" style="background:conic-gradient('+grad.join(',')+')"><span>Total<br><b>'+rp(o)+'</b></span></div><div class="leg">'+ce.slice(0,6).map(function(c,j){return'<div><span><i style="background:'+COL[j%COL.length]+'"></i>'+esc(c)+'</span><b>'+Math.round(cat[c]/o*100)+'%</b></div>'}).join('')+'</div></div>':'<div class="empty">Belum ada pengeluaran pada periode ini</div>')+'</div></div>';
  var se=Object.keys(src).sort(function(a,b){return src[b]-src[a]}),rc=sorted(L).slice(0,5);
  h+='<div class="g2"><div class="card"><h2>Sumber pemasukan</h2>'+(i>0?se.map(function(c){return'<div class="src"><div class="l"><span>'+esc(c)+'</span><b>'+rp(src[c])+'</b></div><div class="b"><i style="width:'+src[c]/i*100+'%"></i></div></div>'}).join(''):'<div class="empty">Belum ada pemasukan pada periode ini</div>')+'</div>';
  h+='<div class="card"><h2>Transaksi terbaru</h2>'+(rc.length?rc.map(txh).join(''):'<div class="empty">Belum ada transaksi. Ketuk Catat untuk memulai.</div>')+'</div></div>';
- var d=$('d_body');d.className=re===1?'re':'';d.innerHTML=h;countAll(d);
+ var d=$('d_body');d.className=re===1?'re':'';d.innerHTML=h;countAll(d);requestAnimationFrame(function(){requestAnimationFrame(function(){var g=d.querySelector('.gf');if(g)g.style.strokeDashoffset=g.getAttribute('data-to')})});
 }
 function txh(x,n){return'<div class="tx" style="--i:'+Math.min(n||0,10)+'" data-a="edit" data-v="'+x.id+'"><div class="ic">'+icon(x.c)+'</div><div class="m"><b>'+esc(x.c)+'</b><span class="mut">'+esc(x.n||'')+(x.n?' \u00b7 ':'')+x.d.slice(8)+'/'+x.d.slice(5,7)+'</span></div><div class="a '+(x.t==='in'?'pos':'neg')+'">'+(x.t==='in'?'+':'\u2212')+num(x.a)+'</div></div>'}
 function list(){
@@ -338,7 +395,7 @@ function countAll(root){
  if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)return;
  [].forEach.call(root.querySelectorAll('[data-n]'),function(el){
   var to=+el.getAttribute('data-n'),k=el.getAttribute('data-k'),from=lastN[k]||0,t0=performance.now();lastN[k]=to;
-  (function f(t){var p=Math.min(1,(t-t0)/850),e=1-Math.pow(1-p,3);el.textContent=rp(from+(to-from)*e);if(p<1)requestAnimationFrame(f)})(t0);
+  (function f(t){var p=Math.min(1,(t-t0)/1900),e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2,v=from+(to-from)*e;el.textContent=el.getAttribute('data-f')==='p'?Math.round(v)+'%':rp(v);if(p<1)requestAnimationFrame(f)})(t0);
  });
 }
 function ask(o){return new Promise(function(res){
@@ -392,11 +449,7 @@ function start(pw){
 }
 $('lb').onsubmit=function(e){e.preventDefault();if(!$('pw').value)return($('lm').textContent='Masukkan kata sandi');start($('pw').value)};
 $('st').onclick=function(){if(this.getAttribute('data-s')==='err'&&PW&&!busy)save()};
-['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,function(e){e.preventDefault()},{passive:false})});
-document.addEventListener('touchmove',function(e){if(e.touches.length>1||(e.scale&&e.scale!==1))e.preventDefault()},{passive:false});
-var lt=0;document.addEventListener('touchend',function(e){var n=Date.now();if(n-lt<350&&!e.target.closest('input,select,button'))e.preventDefault();lt=n},{passive:false});
-document.addEventListener('wheel',function(e){if(e.ctrlKey)e.preventDefault()},{passive:false});
-document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&['+','=','-','_','0'].indexOf(e.key)>-1)e.preventDefault()});
+
 $('eye').onclick=function(){var p=$('pw');p.type=p.type==='password'?'text':'password'};
 var sv='';try{sv=localStorage.getItem('keu_pw')||''}catch(e){}
 if(sv)start(sv);

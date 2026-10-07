@@ -510,7 +510,7 @@ function init(){
   });
  }
 }
-function enterApp(){$('login').hidden=true;$('app').hidden=false;init();show('dash')}
+function enterApp(){$('login').hidden=true;$('app').hidden=false;la=Date.now();try{localStorage.setItem(KA,la)}catch(e){}init();show('dash')}
 function loginDone(){var b=$('go');b.classList.remove('ld');b.disabled=false}
 function start(pw){
  if(!/^https:\/\//.test(API)){$('lm').textContent='URL backend belum diisi di config.js.';return}
@@ -537,7 +537,15 @@ $('lb').onsubmit=function(e){e.preventDefault();if(!$('pw').value)return($('lm')
 $('st').onclick=function(){if(this.getAttribute('data-s')==='err'&&PW&&!busy){if(ps)save();else{setSt('Menyinkronkan','busy');reload().catch(function(){setSt('Offline, ketuk untuk ulangi','err')})}}};
 
 $('eye').onclick=function(){var p=$('pw');p.type=p.type==='password'?'text':'password'};
+var IDLE=300000,KA='keu_act',la=0,lw=0;
+function autoOut(){var o=$('ov');o.classList.remove('on');o.hidden=true;resetForm();logout();$('lm').textContent='Sesi berakhir karena tidak aktif selama 5 menit. Masuk lagi untuk melanjutkan.'}
+function idle(){if(PW&&!$('app').hidden&&!busy&&Date.now()-la>=IDLE)autoOut()}
+function act(){if(!PW||$('app').hidden)return;var n=Date.now();if(!busy&&n-la>=IDLE){autoOut();return}la=n;if(n-lw>5000){lw=n;try{localStorage.setItem(KA,n)}catch(e){}}}
+['pointerdown','keydown','touchstart','scroll','wheel'].forEach(function(ev){document.addEventListener(ev,act,{passive:true,capture:true})});
+document.addEventListener('visibilitychange',function(){if(!document.hidden)idle()});
+setInterval(idle,5000);
 var sv='';try{sv=localStorage.getItem('keu_pw')||''}catch(e){}
+if(sv){var lt2=0;try{lt2=+localStorage.getItem(KA)||0}catch(e){}if(Date.now()-lt2>=IDLE){try{localStorage.removeItem('keu_pw')}catch(e){}sv='';$('lm').textContent='Sesi berakhir karena tidak aktif selama 5 menit. Masuk lagi untuk melanjutkan.'}}
 if(sv)start(sv);
 })();
 </script>
